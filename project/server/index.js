@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dbConnection = require("./dbConfig.js");
+const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(
     origin: "http://localhost:5173",
   }),
 );
+app.use(cookieParser());
 app.use("/api/auth", userRoutes);
 
 app.listen(8002, () => {

@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../models/user.model.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const isAuth = require("../middlewares/authmiddleware.js");
 const userRouter = express.Router();
 
 //Register API
@@ -54,15 +55,23 @@ userRouter.post("/login", async (req, res) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "10d",
     });
+    res.cookie("jwtToken", token, {
+      httpOnly: true,
+    });
     return res.send({
       success: true,
       message: "user logged in successfully",
-      token: token,
     });
   } catch (error) {
     return res.status(500).json({
-      message: error,
+      success: false,
+      message: "Error in Logging in!",
     });
   }
+});
+userRouter.get("/current-user", isAuth, async (req, res) => {
+  const userId = req.userId;
+
+  res.send({ userId: userId });
 });
 module.exports = userRouter;
