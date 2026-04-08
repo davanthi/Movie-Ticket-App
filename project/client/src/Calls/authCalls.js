@@ -2,6 +2,7 @@ import axios from "axios";
 import { API_BASE_URL } from "./config.js";
 const api = axios.create({
   baseURL: API_BASE_URL,
+  withCredentials: true,
 });
 export const registerUser = async (values) => {
   try {
@@ -19,4 +20,13 @@ export const loginUser = async (values) => {
     console.log(error);
   }
 };
-
+export const getCurrentUser = async () => {
+  try {
+    const response = await api.get("api/auth/current-user", {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

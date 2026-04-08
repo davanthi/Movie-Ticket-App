@@ -3,16 +3,21 @@ import { Button, Form, Input, Card, Typography, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css";
 import { loginUser } from "../../Calls/authCalls.js";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../../redux/userSlice.js";
 
 const { Title, Text } = Typography;
 
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const onSubmit = async (values) => {
     try {
       const userData = await loginUser(values);
       if (userData.success) {
         message.success(userData.message);
+        dispatch(setUserData(userData.user));
+
         navigate("/home");
       } else {
         message.error(userData.message);

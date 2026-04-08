@@ -61,6 +61,7 @@ userRouter.post("/login", async (req, res) => {
     return res.send({
       success: true,
       message: "user logged in successfully",
+      user: user,
     });
   } catch (error) {
     return res.status(500).json({
@@ -70,8 +71,25 @@ userRouter.post("/login", async (req, res) => {
   }
 });
 userRouter.get("/current-user", isAuth, async (req, res) => {
-  const userId = req.userId;
-
-  res.send({ userId: userId });
+  try {
+    const verifiedUser = await User.findById(req.userId).select("-password");
+    if (!verifiedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    return res.json({
+      _id: verifiedUser._id,
+      name: verifiedUser.name,
+      email: verifiedUser.email,
+      role: verifiedUser.role,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching current user!",
+    });
+  }
 });
 module.exports = userRouter;
