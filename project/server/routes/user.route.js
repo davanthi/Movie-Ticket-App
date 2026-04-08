@@ -1,7 +1,9 @@
 const express = require("express");
 const User = require("../models/user.model.js");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const userRouter = express.Router();
+
 //Register API
 userRouter.post("/register", async (req, res) => {
   try {
@@ -44,17 +46,21 @@ userRouter.post("/login", async (req, res) => {
       user.password,
     );
     if (!validPassword) {
-      res.send({
+      return res.send({
         success: false,
         message: "sorry invalid password",
       });
     }
-    res.send({
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "10d",
+    });
+    return res.send({
       success: true,
       message: "user logged in successfully",
+      token: token,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: error,
     });
   }

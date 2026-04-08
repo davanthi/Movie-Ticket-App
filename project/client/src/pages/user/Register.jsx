@@ -1,12 +1,20 @@
 import React from "react";
-import { Form, Input, Button, Radio } from "antd";
+import { Form, Input, Button, Radio, message } from "antd";
 import "./Auth.css";
 import { registerUser } from "../../Calls/authCalls.js";
 
 function Register() {
   const onSubmit = async (values) => {
-    const userData = await registerUser(values);
-    console.log(userData);
+    try {
+      const userData = await registerUser(values);
+      if (userData.success) {
+        message.success(userData.message);
+      } else {
+        message.error(userData.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
   return (
     <div>
