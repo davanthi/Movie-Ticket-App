@@ -9,6 +9,7 @@ const app = express();
 
 dbConnection.connectDB();
 const userRoutes = require("./routes/user.route.js");
+const movieRoutes = require("./routes/movie.route.js");
 app.use(express.json());
 app.use(
   cors({
@@ -18,6 +19,7 @@ app.use(
 );
 app.use(cookieParser());
 app.use("/api/auth", userRoutes);
+app.use("/api/movie", movieRoutes);
 
 app.listen(8002, () => {
   console.log("server started on port 8002");
